@@ -128,23 +128,6 @@ export function rankCandidates<T extends RankedCandidate>(
   );
 }
 
-export function confirmationDue(
-  decisionTime: number,
-  lastTime: number,
-  candidate: Candidate,
-  targetCount: number,
-): number | undefined {
-  const due = decisionTime + 2 * m15;
-  if (
-    due < lastTime &&
-    targetCount === 1 &&
-    Number.isFinite(candidate.stop) &&
-    Number.isFinite(candidate.target)
-  ) {
-    return due;
-  }
-}
-
 export function confirmsEntry(candidate: Candidate, bar: Bar): boolean {
   const side = sideOf(candidate.direction);
   const adverse = side > 0 ? bar.low : bar.high;
@@ -154,15 +137,6 @@ export function confirmsEntry(candidate: Candidate, bar: Bar): boolean {
     side * (adverse - candidate.stop) > 0 &&
     side * (candidate.target - favorable) > 0
   );
-}
-
-export function hasCapacity(
-  occupied: ReadonlySet<string>,
-  openCount: number,
-  symbol: string,
-  maxPositions: number,
-): boolean {
-  return openCount < maxPositions && !occupied.has(symbol);
 }
 
 export function sizeConfirmedEntry(

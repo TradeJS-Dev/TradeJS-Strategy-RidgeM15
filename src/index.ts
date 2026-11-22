@@ -1,52 +1,128 @@
-import { defineStrategyPlugin } from "@tradejs/core/config";
-import { createCostIsolatedStrategyConfigParser } from "@tradejs/strategy-kit/config";
-import type { StrategyConfig, StrategyRegistryEntry } from "@tradejs/types";
-import { sourceDefinitions, resolveSources } from "./children";
+import {
+  definePortfolioStrategy,
+  defineStrategyPlugin,
+} from "@tradejs/core/config";
+import {
+  createCostIsolatedStrategyConfigParser,
+  StrategyConfigValidationError,
+} from "@tradejs/strategy-kit/config";
+import type { PortfolioEntryCandidate, StrategyConfig } from "@tradejs/types";
+import { resolveSources } from "./children";
 import {
   allowsException,
   candidateFeatures,
-  confirmationDue,
   confirmsEntry,
   frozenSettings,
-  hasCapacity,
+  m15,
   rankCandidates,
   scoreCandidate,
   sizeConfirmedEntry,
+  sourceNames,
+  type Candidate,
+  type SourceName,
 } from "./policy";
 
 const defaults: StrategyConfig = {
-  ...sourceDefinitions.TrendFollow.defaults,
   INTERVAL: "15",
-  AI_ENABLED: false,
+  UNIVERSE: "crypto",
+  MAX_LOSS_VALUE: 10,
 };
 
-export const RidgeM15StrategyDefinition = {
+const baseParser = createCostIsolatedStrategyConfigParser({
+  strategyName: "RidgeM15",
+  defaults,
+});
+
+function modelCandidate(candidate: PortfolioEntryCandidate): Candidate {
+  const strategy = candidate.strategy as SourceName;
+  if (!sourceNames.includes(strategy)) {
+    throw new Error(`Unexpected RidgeM15 child: ${candidate.strategy}`);
+  }
+  return {
+    strategy,
+    symbol: candidate.symbol,
+    direction: candidate.direction,
+    stop: candidate.stop,
+    target: candidate.targets[0] ?? NaN,
+    ...candidate.gate,
+  };
+}
+
+export const RidgeM15StrategyDefinition = definePortfolioStrategy({
   manifest: { name: "RidgeM15" },
   defaults,
-  parseConfig: createCostIsolatedStrategyConfigParser({
-    strategyName: "RidgeM15",
-    defaults,
-  }),
-  createCore() {
-    throw new Error(
-      "RidgeM15 requires a host that coordinates a portfolio decision tick",
+  parseConfig(input) {
+    const config = baseParser(input);
+    if (
+      config.INTERVAL !== "15" ||
+      config.UNIVERSE !== "crypto" ||
+      !Number.isFinite(config.MAX_LOSS_VALUE) ||
+      config.MAX_LOSS_VALUE <= 0
+    ) {
+      throw new StrategyConfigValidationError("RidgeM15", [
+        "RidgeM15 requires crypto, a 15-minute base interval and positive MAX_LOSS_VALUE",
+      ]);
+    }
+    return config;
+  },
+  resolveChildren(config) {
+    return resolveSources("PARITY", config.MAX_LOSS_VALUE);
+  },
+  execution: frozenSettings,
+  selectEntries({ candidates, market, closedAt }) {
+    const ranked = rankCandidates(
+      candidates.map((candidate) => {
+        const model = modelCandidate(candidate);
+        const candle = (symbol: string, ago: number) => {
+          const value = market.candle(symbol, ago);
+          if (!value)
+            throw new Error(`Missing RidgeM15 market candle: ${symbol}/${ago}`);
+          return value;
+        };
+        return {
+          ...model,
+          candidate,
+          score:
+            Number.isFinite(model.stop) && Number.isFinite(model.target)
+              ? scoreCandidate(
+                  candidateFeatures(
+                    model,
+                    (ago) => candle(model.symbol, ago),
+                    (ago) => candle("BTCUSDT", ago),
+                  ),
+                )
+              : -Infinity,
+        };
+      }),
     );
+    return {
+      ranked: ranked
+        .filter((candidate) => candidate.approved)
+        .map(({ candidate }) => candidate.id),
+      pending: ranked
+        .filter(
+          (candidate) =>
+            candidate.candidate.targets.length === 1 &&
+            allowsException(candidate),
+        )
+        .map(({ candidate }) => ({
+          candidateId: candidate.id,
+          confirmAt: closedAt + m15,
+        })),
+    };
   },
-  portfolio: {
-    resolveSources,
-    settings: frozenSettings,
-    candidateFeatures,
-    scoreCandidate,
-    allowsException,
-    rankCandidates,
-    confirmationDue,
-    confirmsEntry,
-    sizeConfirmedEntry,
-    hasCapacity,
+  confirmEntry({ candidate, candle, openingPrice, minNetRewardToRisk }) {
+    const model = modelCandidate(candidate);
+    if (!confirmsEntry(model, candle)) return null;
+    const sized = sizeConfirmedEntry(
+      model,
+      openingPrice,
+      minNetRewardToRisk,
+      frozenSettings,
+    );
+    return sized ? { qty: sized.qty, risk: frozenSettings.extraRisk } : null;
   },
-} satisfies StrategyRegistryEntry & { portfolio: object };
+});
 
 export const strategyEntries = [RidgeM15StrategyDefinition];
-
 export default defineStrategyPlugin({ strategyEntries });
-export type { Candidate, RankedCandidate } from "./policy";
