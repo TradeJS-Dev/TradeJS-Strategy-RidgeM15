@@ -110,3 +110,40 @@ it("skips only candidates missing their own feature history", () => {
   });
   expect(result).toEqual({ ranked: ["ready"], pending: [] });
 });
+
+it("queues the qualifying TradingPatterns short for the next M15 close", () => {
+  const eligible: PortfolioEntryCandidate = {
+    ...extra,
+    direction: "SHORT",
+    stop: 110,
+    targets: [80],
+    gate: { ...extra.gate, rawQuality: 3 },
+  };
+  const tooLow = {
+    ...eligible,
+    id: "too-low",
+    gate: { ...eligible.gate, rawQuality: 1 },
+  };
+  const multipleTargets = { ...eligible, id: "multi", targets: [85, 80] };
+  expect(
+    portfolio.selectEntries({
+      closedAt: 900_000,
+      candidates: [eligible, tooLow, multipleTargets],
+      market: { candle: () => ({ ...candle, close: 100 }) },
+    }),
+  ).toEqual({
+    ranked: [],
+    pending: [{ candidateId: eligible.id, confirmAt: 1_800_000 }],
+  });
+});
+
+it("breaks equal scores by symbol within one source strategy", () => {
+  const first = { ...regular, id: "first", symbol: "BTCUSDT" };
+  expect(
+    portfolio.selectEntries({
+      closedAt: 900_000,
+      candidates: [regular, first],
+      market: { candle: () => candle },
+    }).ranked,
+  ).toEqual(["first", "regular"]);
+});
