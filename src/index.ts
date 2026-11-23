@@ -71,28 +71,19 @@ export const RidgeM15StrategyDefinition = definePortfolioStrategy({
   execution: frozenSettings,
   selectEntries({ candidates, market, closedAt }) {
     const ranked = rankCandidates(
-      candidates.map((candidate) => {
+      candidates.flatMap((candidate) => {
         const model = modelCandidate(candidate);
-        const candle = (symbol: string, ago: number) => {
-          const value = market.candle(symbol, ago);
-          if (!value)
-            throw new Error(`Missing RidgeM15 market candle: ${symbol}/${ago}`);
-          return value;
-        };
-        return {
-          ...model,
-          candidate,
-          score:
-            Number.isFinite(model.stop) && Number.isFinite(model.target)
-              ? scoreCandidate(
-                  candidateFeatures(
-                    model,
-                    (ago) => candle(model.symbol, ago),
-                    (ago) => candle("BTCUSDT", ago),
-                  ),
-                )
-              : -Infinity,
-        };
+        if (!Number.isFinite(model.stop) || !Number.isFinite(model.target)) {
+          return [{ ...model, candidate, score: -Infinity }];
+        }
+        const features = candidateFeatures(
+          model,
+          (ago) => market.candle(model.symbol, ago),
+          (ago) => market.candle("BTCUSDT", ago),
+        );
+        return features
+          ? [{ ...model, candidate, score: scoreCandidate(features) }]
+          : [];
       }),
     );
     return {

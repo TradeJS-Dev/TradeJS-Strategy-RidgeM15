@@ -58,17 +58,34 @@ const ordinal = new Map<string, number>(
 
 export function candidateFeatures(
   candidate: Candidate,
-  symbolBar: (barsAgo: number) => Bar,
-  bitcoinBar: (barsAgo: number) => Bar,
-): number[] {
+  symbolBar: (barsAgo: number) => Bar | undefined,
+  bitcoinBar: (barsAgo: number) => Bar | undefined,
+): number[] | undefined {
   const current = symbolBar(0);
+  const previousDay = symbolBar(96);
+  const bitcoin = bitcoinBar(0);
+  const bitcoinPrevious = bitcoinBar(16);
+  const bitcoinPreviousDay = bitcoinBar(96);
+  if (
+    !current ||
+    !previousDay ||
+    !bitcoin ||
+    !bitcoinPrevious ||
+    !bitcoinPreviousDay
+  )
+    return;
+
   const side = sideOf(candidate.direction);
-  const trend = (bar: (barsAgo: number) => Bar, ago: number) =>
-    Math.log(bar(0).close / bar(ago).close);
-  let recentTurnover = 0;
-  for (let ago = 16; ago >= 1; ago--) {
-    recentTurnover += symbolBar(ago).turnover;
+  const previous = symbolBar(16);
+  if (!previous) return;
+  let recentTurnover = previous.turnover;
+  for (let ago = 15; ago >= 1; ago--) {
+    const bar = symbolBar(ago);
+    if (!bar) return;
+    recentTurnover += bar.turnover;
   }
+  const bitcoinReturn = Math.log(bitcoin.close / bitcoinPrevious.close);
+  const bitcoinDayReturn = Math.log(bitcoin.close / bitcoinPreviousDay.close);
   return [
     ...sourceNames.map((name) => Number(name === candidate.strategy)),
     side,
@@ -79,10 +96,10 @@ export function candidateFeatures(
     Math.log1p(
       100 * (Math.abs(current.close - candidate.target) / current.close),
     ),
-    side * trend(bitcoinBar, 16),
-    side * trend(bitcoinBar, 96),
-    side * (trend(symbolBar, 16) - trend(bitcoinBar, 16)),
-    side * (trend(symbolBar, 96) - trend(bitcoinBar, 96)),
+    side * bitcoinReturn,
+    side * bitcoinDayReturn,
+    side * (Math.log(current.close / previous.close) - bitcoinReturn),
+    side * (Math.log(current.close / previousDay.close) - bitcoinDayReturn),
     (current.high - current.low) / current.close,
     Math.log1p(current.turnover / Math.max(1, recentTurnover / 16)),
   ];

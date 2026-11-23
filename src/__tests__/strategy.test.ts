@@ -97,3 +97,16 @@ it("checks the closed M15 and sizes the extra trade with its stop costs", () => 
     portfolio.confirmEntry({ ...input, minNetRewardToRisk: 2 }),
   ).toBeNull();
 });
+
+it("skips only candidates missing their own feature history", () => {
+  const ready = { ...regular, id: "ready", symbol: "BNBUSDT" };
+  const result = portfolio.selectEntries({
+    closedAt: 900_000,
+    candidates: [regular, ready],
+    market: {
+      candle: (symbol, ago) =>
+        symbol === regular.symbol && ago === 96 ? undefined : candle,
+    },
+  });
+  expect(result).toEqual({ ranked: ["ready"], pending: [] });
+});
