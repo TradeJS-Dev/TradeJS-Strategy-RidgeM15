@@ -40,14 +40,12 @@ export interface RankedCandidate extends Candidate {
 export interface RidgeSettings {
   feeRate: number;
   slippageBps: number;
-  extraRisk: number;
   maxPositions: number;
 }
 
 export const frozenSettings: RidgeSettings = {
   feeRate: 0.00055,
   slippageBps: 2,
-  extraRisk: 5,
   maxPositions: 3,
 };
 
@@ -161,6 +159,7 @@ export function sizeConfirmedEntry(
   openingPrice: number,
   minNetRR: number,
   settings: RidgeSettings,
+  risk: number,
 ): { loss: number; qty: number } | undefined {
   const { direction, stop, target } = candidate;
   const side = sideOf(direction);
@@ -170,11 +169,12 @@ export function sizeConfirmedEntry(
   const taken = target * (1 - side * slip);
   const loss = side * (entry - stopped) + settings.feeRate * (entry + stopped);
   const reward = side * (taken - entry) - settings.feeRate * (entry + taken);
-  const qty = settings.extraRisk / loss;
+  const qty = risk / loss;
   if (
     [entry, loss, reward, qty, stop, target].every(Number.isFinite) &&
     stop > 0 &&
     target > 0 &&
+    qty > 0 &&
     side * (entry - stop) > 0 &&
     loss > 0 &&
     reward / loss > Math.max(0, minNetRR || 0)

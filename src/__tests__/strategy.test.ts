@@ -111,6 +111,18 @@ it("skips only candidates missing their own feature history", () => {
   expect(result).toEqual({ ranked: ["ready"], pending: [] });
 });
 
+it("sizes an additional entry at half of the configured maximum loss", () => {
+  const input = {
+    candidate: extra,
+    candle,
+    openingPrice: 100,
+    minNetRewardToRisk: 1,
+    config: portfolio.parseConfig({ MAX_LOSS_VALUE: 2 }),
+  };
+  expect(portfolio.confirmEntry(input)).toMatchObject({ risk: 1 });
+  expect(portfolio.confirmEntry(input)!.qty).toBeCloseTo(0.0985950126, 8);
+});
+
 it("queues the qualifying TradingPatterns short for the next M15 close", () => {
   const eligible: PortfolioEntryCandidate = {
     ...extra,

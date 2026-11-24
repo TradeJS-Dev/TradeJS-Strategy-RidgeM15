@@ -6,7 +6,11 @@ import {
   createCostIsolatedStrategyConfigParser,
   StrategyConfigValidationError,
 } from "@tradejs/strategy-kit/config";
-import type { PortfolioEntryCandidate, StrategyConfig } from "@tradejs/types";
+import type {
+  PortfolioConfirmation,
+  PortfolioEntryCandidate,
+  StrategyConfig,
+} from "@tradejs/types";
 import { resolveSources } from "./children";
 import {
   allowsException,
@@ -102,16 +106,24 @@ export const RidgeM15StrategyDefinition = definePortfolioStrategy({
         })),
     };
   },
-  confirmEntry({ candidate, candle, openingPrice, minNetRewardToRisk }) {
+  confirmEntry({
+    candidate,
+    candle,
+    openingPrice,
+    minNetRewardToRisk,
+    config,
+  }: PortfolioConfirmation & { config?: StrategyConfig }) {
     const model = modelCandidate(candidate);
     if (!confirmsEntry(model, candle)) return null;
+    const risk = (config?.MAX_LOSS_VALUE ?? defaults.MAX_LOSS_VALUE) / 2;
     const sized = sizeConfirmedEntry(
       model,
       openingPrice,
       minNetRewardToRisk,
       frozenSettings,
+      risk,
     );
-    return sized ? { qty: sized.qty, risk: frozenSettings.extraRisk } : null;
+    return sized ? { qty: sized.qty, risk } : null;
   },
 });
 
