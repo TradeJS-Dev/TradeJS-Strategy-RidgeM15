@@ -10,7 +10,7 @@ The model weights are fixed. The SHA-256 of `src/model.json` is `f3f15135d56df9b
 
 ## Connect to TradeJS Project
 
-Use TradeJS with the portfolio strategy API. This version of RidgeM15 requires `@tradejs/core` and `@tradejs/types` at `3.1.29`. TradeJS Project supplies the exact package versions listed in `peerDependencies`.
+Use TradeJS `3.1.30` with the portfolio strategy API. TradeJS Project supplies the exact package versions listed in `peerDependencies`.
 
 Install `@tradejs/strategy-ridge-m15` in TradeJS Project and add it to the top-level `strategies` list in `tradejs.config.ts`. Inside the deployment's `strategies` map, enable one entry.
 
@@ -42,7 +42,13 @@ yarn exec tradejs signals-daemon --deployment ridge-m15-shadow --portfolioShadow
 
 The daemon evaluates signals after candle close and tracks pending confirmations and simulated occupancy across restarts. Shadow mode records entry decisions and places no exchange orders.
 
-Live orders require a TradeJS build with live portfolio execution. In a compatible build, `signals-daemon --deployment <id> --makeOrders` enables the standard order path. The deployed TradeJS Project must supply the package versions required by its RidgeM15 release.
+## Run with live orders
+
+Use a Bybit deployment with one enabled RidgeM15 entry, a bound account, and an explicit list of USDT contracts. Start the daemon from TradeJS Project and replace `ridge-m15-live` with the deployment ID.
+
+```bash
+yarn exec tradejs signals-daemon --deployment ridge-m15-live --makeOrders
+```
 
 ## Package checks
 

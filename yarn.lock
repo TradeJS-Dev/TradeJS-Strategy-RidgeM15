@@ -1073,16 +1073,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tradejs/core@npm:3.1.29":
-  version: 3.1.29
-  resolution: "@tradejs/core@npm:3.1.29"
+"@tradejs/core@npm:3.1.30":
+  version: 3.1.30
+  resolution: "@tradejs/core@npm:3.1.30"
   dependencies:
-    "@tradejs/types": "npm:^3.1.29"
+    "@tradejs/types": "npm:^3.1.30"
     date-fns: "npm:^3.6.0"
     fast-technical-indicators: "npm:^1.1.4"
     klinecharts: "npm:10.0.0-alpha9"
     lodash: "npm:^4.18.1"
-  checksum: 10c0/2a4afce05315d303c3c752e2615b3637c90894d3f2c95258d558c7c0d80973fc8ccb57594d8f9c9552ff2c264ed1f8d41c9f6a1bf7d030ee04527d466b703b2a
+  checksum: 10c0/c0bae091af17487d1129cdfe3e5f36eb2c119883df4a6c40a94e77c95b2d9ad1a68ef0a3e2410e8c2d11111ad526d0cbf7394ccf42909c54ed52186ad6da893b
   languageName: node
   linkType: hard
 
@@ -1166,7 +1166,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tradejs/strategy-ridge-m15@workspace:."
   dependencies:
-    "@tradejs/core": "npm:3.1.29"
+    "@tradejs/core": "npm:3.1.30"
     "@tradejs/strategy-diamond": "npm:0.1.2"
     "@tradejs/strategy-double-tap": "npm:3.0.6"
     "@tradejs/strategy-flag": "npm:0.1.7"
@@ -1177,7 +1177,7 @@ __metadata:
     "@tradejs/strategy-trading-patterns": "npm:0.1.3"
     "@tradejs/strategy-trend-follow": "npm:3.0.7"
     "@tradejs/strategy-trend-shift": "npm:3.0.6"
-    "@tradejs/types": "npm:3.1.29"
+    "@tradejs/types": "npm:3.1.30"
     "@types/jest": "npm:^29.5.14"
     jest: "npm:^29.7.0"
     prettier: "npm:^3.6.2"
@@ -1185,7 +1185,7 @@ __metadata:
     tsup: "npm:^8.5.1"
     typescript: "npm:^5.9.2"
   peerDependencies:
-    "@tradejs/core": 3.1.29
+    "@tradejs/core": 3.1.30
     "@tradejs/strategy-diamond": 0.1.2
     "@tradejs/strategy-double-tap": 3.0.6
     "@tradejs/strategy-flag": 0.1.7
@@ -1196,7 +1196,7 @@ __metadata:
     "@tradejs/strategy-trading-patterns": 0.1.3
     "@tradejs/strategy-trend-follow": 3.0.7
     "@tradejs/strategy-trend-shift": 3.0.6
-    "@tradejs/types": 3.1.29
+    "@tradejs/types": 3.1.30
   languageName: unknown
   linkType: soft
 
@@ -1237,10 +1237,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tradejs/types@npm:3.1.29, @tradejs/types@npm:^3.1.29":
-  version: 3.1.29
-  resolution: "@tradejs/types@npm:3.1.29"
-  checksum: 10c0/7102436fbe074846358234d15194b2334e24033d41e6d7f99a76febc039347742680487d0d8f3902ca08e6bd2bbbe5c838a7baffde84bc1809876682c3a68f6c
+"@tradejs/types@npm:3.1.30, @tradejs/types@npm:^3.1.30":
+  version: 3.1.30
+  resolution: "@tradejs/types@npm:3.1.30"
+  checksum: 10c0/b6367647144d696ab896347968f81a1786d67077198fd25361d644e82d5dfa10c5474d14302f4d7e441f08411e1802f422c01cada143054c378920b10d614d57
   languageName: node
   linkType: hard
 
