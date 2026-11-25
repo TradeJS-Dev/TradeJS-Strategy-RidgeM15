@@ -12,14 +12,16 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "launch-reports"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./launch-reports/*.json": "./launch-reports/*.json"
   },
   "sideEffects": false,
   "devDependencies": {

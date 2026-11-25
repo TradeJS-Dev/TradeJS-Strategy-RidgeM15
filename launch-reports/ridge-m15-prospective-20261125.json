@@ -1,0 +1,24 @@
+{
+  "schema": "tradejs-launch-report/v1",
+  "strategy": "RidgeM15",
+  "candidate": "RidgeM15 0.1.3",
+  "sourceSha256": "a49e935b18352c4bcdeceb94ff71bf78619c6ebf2776b5e743c3837419d44537",
+  "researchRiskUsdt": 10,
+  "note": "Historical replay used 513 Bybit USDT perpetual contracts, with 10 USDT risk for standard entries and 5 USDT for confirmed entries. The historical evidence was research-only. The operator authorized a prospective launch with risk set to 1 USDT.",
+  "period": {
+    "start": 1700298000000,
+    "end": 1794992400000
+  },
+  "metrics": {
+    "trades": 1000,
+    "winRatePercent": 55.5,
+    "pnl": 1891.02,
+    "profitFactor": 1.5,
+    "maxDrawdown": 178.99,
+    "maxDrawdownDurationDays": 103.33
+  },
+  "chart": {
+    "caption": "Bybit USDT perpetuals, 18 Nov 2023 to 18 Nov 2026",
+    "sha256": "7d68bea6dc5b15020a669372731830971111069be1744f91a72fb6f78233d810"
+  }
+}
