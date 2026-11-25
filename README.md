@@ -10,7 +10,9 @@ The model weights are fixed. The SHA-256 of `src/model.json` is `f3f15135d56df9b
 
 ## Connect to TradeJS Project
 
-Use TradeJS `3.1.30` with the portfolio strategy API. TradeJS Project supplies the exact package versions listed in `peerDependencies`.
+Use stable TradeJS 3.x from `3.1.30` onward or a TradeJS `3.1.31` beta from `3.1.31-beta.323` onward. TradeJS Project pins the exact versions it runs. See `peerDependencies` for the supported ranges.
+
+For a standalone npm project using a beta, pin `@tradejs/core` and `@tradejs/types` to that beta in the root `dependencies` and repeat both pins in the root `overrides`. Some of RidgeM15's source strategies still declare stable-only ranges.
 
 Install `@tradejs/strategy-ridge-m15` in TradeJS Project and add it to the top-level `strategies` list in `tradejs.config.ts`. Inside the deployment's `strategies` map, enable one entry.
 
