@@ -1,6 +1,6 @@
 {
   "name": "@tradejs/strategy-ridge-m15",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "TradeJS portfolio strategy with Ridge ranking across six signal sources and 15-minute confirmation for additional TradingPatterns entries.",
   "type": "module",
   "packageManager": "yarn@4.13.0",
