@@ -4,7 +4,7 @@
 
 Ridge regression estimates net return per unit of risk and ranks signals from the same candle close across symbols. Signals accepted by their source filters can enter without an extra confirmation candle. RidgeM15 can also consider a TradingPatterns signal with one target that the AI gate rejected for low quality. The original quality must be at least 2, the signal must pass the structural checks, and Ridge must estimate a net return of at least 0.5 times the initial risk.
 
-An additional entry waits for the next 15-minute candle to close in the trade direction without touching the stop or target. At the following open, the portfolio checks available capacity and requires the reward-to-risk ratio after costs to exceed the source strategy's minimum. Regular entries use `MAX_LOSS_VALUE`, which defaults to 10 USDT. Additional entries use half of `MAX_LOSS_VALUE`, including estimated costs at the stop. The portfolio allows three open positions and one per symbol.
+An additional entry waits for the next 15-minute candle to close in the trade direction without touching the stop or target. At the following open, the portfolio checks available capacity and requires the reward-to-risk ratio after costs to exceed the source strategy's minimum. Regular entries use `MAX_LOSS_VALUE`, which defaults to 10 USDT. Additional entries use half of `MAX_LOSS_VALUE`, including estimated costs at the stop. The portfolio allows up to five open positions and one per symbol.
 
 The model weights are fixed. The SHA-256 of `src/model.json` is `f3f15135d56df9b03bfa7c7a47763cb65c6ef61736fb515dc19316c4af975970`.
 

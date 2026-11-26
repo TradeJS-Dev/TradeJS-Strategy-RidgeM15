@@ -45,6 +45,7 @@ it("registers one strategy with the six original child packages", () => {
     expect.objectContaining({
       kind: "portfolio",
       manifest: { name: "RidgeM15" },
+      execution: expect.objectContaining({ maxPositions: 5 }),
     }),
   ]);
   const sources = portfolio.resolveChildren(portfolio.parseConfig({}));

@@ -46,7 +46,7 @@ export interface RidgeSettings {
 export const frozenSettings: RidgeSettings = {
   feeRate: 0.00055,
   slippageBps: 2,
-  maxPositions: 3,
+  maxPositions: 5,
 };
 
 const sideOf = (direction: Direction) => (direction === "LONG" ? 1 : -1);

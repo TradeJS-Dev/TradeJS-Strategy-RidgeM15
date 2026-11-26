@@ -1,0 +1,24 @@
+{
+  "schema": "tradejs-launch-report/v1",
+  "strategy": "RidgeM15",
+  "candidate": "RidgeM15 with five simultaneous positions",
+  "sourceSha256": "6439952516e92a2dc8899287cb4d4a8608958ffc7d953364fd39d367daa00a26",
+  "researchRiskUsdt": 10,
+  "note": "Historical replay on 513 Bybit USDT perpetual contracts. Risk was 10 USDT for standard entries and 5 USDT for confirmed entries. The portfolio reached five open positions and averaged 8.32 trades per week. The Agent deployment uses 1 USDT for standard entries and 0.5 USDT for confirmed entries.",
+  "period": {
+    "start": 1700298000000,
+    "end": 1794992400000
+  },
+  "metrics": {
+    "trades": 1302,
+    "winRatePercent": 55.07,
+    "pnl": 2569.57,
+    "profitFactor": 1.524,
+    "maxDrawdown": 145.96,
+    "maxDrawdownDurationDays": 94.17
+  },
+  "chart": {
+    "caption": "RidgeM15 with limits of 3, 5 and 10 positions on Bybit, 18 Nov 2023 to 18 Nov 2026",
+    "sha256": "03026b9a901a40875b420760561f44bee412449e4a4f2aa857f8adf4b4b4be34"
+  }
+}
